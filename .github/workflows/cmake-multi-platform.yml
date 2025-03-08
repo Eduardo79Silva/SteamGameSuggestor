@@ -15,7 +15,7 @@ jobs:
         - name: Validate branch name
           run: |
             BRANCH_NAME=${GITHUB_REF#refs/heads/}
-            VALID_REGEX="^(feature|bugfix|hotfix|docs)/[a-z0-9-]+$"
+            VALID_REGEX="^(feature|bugfix|hotfix|docs)/[a-z0-9-]+$|^refs/pull/[0-9]+/merge$"
             if [[ ! $BRANCH_NAME =~ $VALID_REGEX ]]; then
               echo "Invalid branch name: $BRANCH_NAME"
               exit 1
