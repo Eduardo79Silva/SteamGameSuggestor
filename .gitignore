@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+# Config files
+**/config.json
+**/compile_commands.json
+
+# Folders
+build/
