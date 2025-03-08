@@ -64,7 +64,10 @@ int main() {
   } catch (const std::exception &e) {
     // Catch standard exceptions
     std::cerr << "Standard exception: " << e.what() << std::endl;
-  }  catch (...) {
+  } catch (_exception e) {
+    // Catch your custom exceptions
+    std::cerr << "Error: " << e.name << std::endl;
+  } catch (...) {
     // Catch any other exceptions
     std::cerr << "Unknown error occurred" << std::endl;
   }
