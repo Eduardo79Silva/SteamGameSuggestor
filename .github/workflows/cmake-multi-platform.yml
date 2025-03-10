@@ -1,10 +1,10 @@
-name: CMake on multiple platforms
+name: CI for SteamSuggestor
 
 on:
   push:
-    branches: [ "main", "dev" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: [ main ]
 
 jobs:
   check-branch:
@@ -19,3 +19,57 @@ jobs:
             exit 1
           fi
 
+  build:
+    runs-on: ${{ matrix.os }}
+    needs: check-branch
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        build_type: [Release]
+        c_compiler: [gcc, clang, cl]
+        include:
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: ubuntu-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+        exclude:
+          - os: windows-latest
+            c_compiler: gcc
+          - os: windows-latest
+            c_compiler: clang
+          - os: ubuntu-latest
+            c_compiler: cl
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Build Directory
+        id: build_dir
+        shell: bash
+        run: |
+          echo "BUILD_DIR=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+      - name: Configure CMake
+        run: |
+          cmake -B "${{ steps.build_dir.outputs.BUILD_DIR }}" \
+                -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
+                -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
+                -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+                -S "${{ github.workspace }}"
+
+      - name: Build
+        run: cmake --build "${{ steps.build_dir.outputs.BUILD_DIR }}" --config "${{ matrix.build_type }}"
+
+      - name: Run Tests
+        working-directory: "${{ steps.build_dir.outputs.BUILD_DIR }}"
+        run: ctest --output-on-failure --build-config "${{ matrix.build_type }}"
+
+      - name: Install
+        run: cmake --install "${{ steps.build_dir.outputs.BUILD_DIR }}" --prefix install
