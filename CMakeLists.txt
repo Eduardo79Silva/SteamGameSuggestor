@@ -28,11 +28,12 @@ target_include_directories(SteamSuggestor PRIVATE
 )
 
 # Handle libcurl dependency
-find_package(CURL QUIET)
-if(NOT CURL_FOUND)
-    # Fallback to bundled libcurl if system one is not found
-    set(CURL_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/lib/curl/include)
-    set(CURL_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lib/curl/lib/libcurl.a)
+if(UNIX)
+  find_package(CURL REQUIRED)
+else()
+  # Windows-specific curl handling
+  set(CURL_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/lib/curl/include)
+  set(CURL_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lib/curl/lib/libcurl.a)
 endif()
 
 target_include_directories(SteamSuggestor PRIVATE ${CURL_INCLUDE_DIRS})
