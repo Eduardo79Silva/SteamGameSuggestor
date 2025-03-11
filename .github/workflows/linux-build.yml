@@ -1,0 +1,40 @@
+name: Linux Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Allows manual triggering from the GitHub UI
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      
+    - name: Set up scripts directory
+      run: |
+        mkdir -p scripts
+        if [ ! -f "scripts/linux-ci.sh" ]; then
+          cp linux-ci.sh scripts/ || echo "Script already exists in directory"
+        fi
+        chmod +x scripts/linux-ci.sh
+      
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake libcurl4-openssl-dev libgtest-dev
+      
+    - name: Run Linux CI script
+      run: ./scripts/linux-ci.sh
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-build-artifacts
+        path: |
+          build/SteamSuggestor
+          build/SteamSuggestor-Linux.tar.gz
+        if-no-files-found: warn

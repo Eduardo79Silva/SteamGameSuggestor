@@ -1,0 +1,44 @@
+name: Windows Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Allows manual triggering from the GitHub UI
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      
+    - name: Set up scripts directory
+      run: |
+        if (-not (Test-Path -Path "scripts")) {
+            New-Item -ItemType Directory -Path "scripts"
+        }
+        if (-not (Test-Path "scripts\windows-ci-script.bat")) {
+          Copy-Item windows-ci-script.bat scripts\ -ErrorAction SilentlyContinue
+        }
+      shell: pwsh
+      
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+      
+    - name: Set up Visual Studio environment
+      uses: ilammy/msvc-dev-cmd@v1
+      
+    - name: Run Windows CI script
+      run: .\scripts\windows-ci-script.bat
+      shell: cmd
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-build-artifacts
+        path: |
+          build/Release/SteamSuggestor.exe
+          build/SteamSuggestor-Windows.zip
+        if-no-files-found: warn

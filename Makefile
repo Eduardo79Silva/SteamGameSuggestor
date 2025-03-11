@@ -39,3 +39,24 @@ clean:
 test: $(TEST_SRC)
 	$(CC) $(CFLAGS) $(INCLUDE) -o $(TEST_BIN) $(TEST_SRC) $(LIBS)
 
+# Makefile to easily run CI scripts
+
+.PHONY: ci-linux ci-windows
+
+# Run Linux CI script
+ci-linux:
+	@echo "Running Linux CI script..."
+	@chmod +x scripts/linux-ci.sh
+	@./scripts/linux-ci.sh
+
+# Run Windows CI script (Windows environments)
+ci-windows:
+	@echo "Running Windows CI script..."
+	@scripts\windows-ci-script.bat
+
+# Help target
+help:
+	@echo "Available targets:"
+	@echo "  ci-linux    - Run Linux CI script"
+	@echo "  ci-windows  - Run Windows CI script (Windows environments)"
+	@echo "  help        - Display this help message"
