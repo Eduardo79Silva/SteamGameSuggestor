@@ -3,11 +3,22 @@ setlocal enabledelayedexpansion
 
 echo Starting Windows CI build for SteamSuggestor
 
-:: Set up build directory - using quotes to handle paths with spaces and special characters
+:: Determine script location and project root
 set "SCRIPT_DIR=%~dp0"
-set "PROJECT_ROOT=%SCRIPT_DIR%"
-set "BUILD_DIR=%PROJECT_ROOT%build"
-if not exist "%BUILD_DIR%" mkdir "%BUILD_DIR%"
+:: If running from scripts directory, go one level up to find project root
+set "SCRIPT_DIR_NAME=%SCRIPT_DIR:~0,-1%"
+for %%I in ("!SCRIPT_DIR_NAME!") do set "FOLDER_NAME=%%~nxI"
+if "!FOLDER_NAME!"=="scripts" (
+    for %%I in ("!SCRIPT_DIR!..") do set "PROJECT_ROOT=%%~fI\"
+) else (
+    set "PROJECT_ROOT=!SCRIPT_DIR!"
+)
+
+echo Project root: !PROJECT_ROOT!
+
+:: Set up build directory
+set "BUILD_DIR=!PROJECT_ROOT!build"
+if not exist "!BUILD_DIR!" mkdir "!BUILD_DIR!"
 
 :: Check for build tools
 echo Checking for build tools...
@@ -32,10 +43,10 @@ if %ERRORLEVEL% neq 0 (
 echo Installing dependencies...
 
 :: Setup curl if not present
-if not exist "%PROJECT_ROOT%lib\curl" (
+if not exist "!PROJECT_ROOT!lib\curl" (
     echo Setting up libcurl...
-    if not exist "%PROJECT_ROOT%lib" mkdir "%PROJECT_ROOT%lib"
-    cd /d "%PROJECT_ROOT%lib"
+    if not exist "!PROJECT_ROOT!lib" mkdir "!PROJECT_ROOT!lib"
+    cd /d "!PROJECT_ROOT!lib"
     
     :: Download and extract curl
     powershell -Command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri https://curl.se/windows/dl-7.83.1_1/curl-7.83.1_1-win64-mingw.zip -OutFile curl.zip; Expand-Archive -Path curl.zip -DestinationPath .; }"
@@ -45,21 +56,21 @@ if not exist "%PROJECT_ROOT%lib\curl" (
         rename "%%D" curl
     )
     
-    if not exist "%PROJECT_ROOT%lib\curl" (
+    if not exist "!PROJECT_ROOT!lib\curl" (
         echo Failed to set up libcurl
         exit /b 1
     )
 )
 
 :: Setup Google Test if not present
-if not exist "%PROJECT_ROOT%lib\gtest" (
+if not exist "!PROJECT_ROOT!lib\gtest" (
     echo Setting up Google Test...
-    cd /d "%PROJECT_ROOT%lib"
+    cd /d "!PROJECT_ROOT!lib"
     
     :: Clone Google Test repository
     git clone https://github.com/google/googletest.git gtest
     
-    if not exist "%PROJECT_ROOT%lib\gtest" (
+    if not exist "!PROJECT_ROOT!lib\gtest" (
         echo Failed to set up Google Test
         exit /b 1
     )
@@ -67,30 +78,30 @@ if not exist "%PROJECT_ROOT%lib\gtest" (
 
 :: Build the project
 echo Building SteamSuggestor...
-cd /d "%BUILD_DIR%"
-cmake -G "Visual Studio 17 2022" -A x64 ..
+cd /d "!BUILD_DIR!"
+cmake -G "Visual Studio 17 2022" -A x64 "!PROJECT_ROOT!"
 cmake --build . --config Release
 
 :: Run tests
 echo Running tests...
-if exist "%BUILD_DIR%\Release\run_tests.exe" (
-    "%BUILD_DIR%\Release\run_tests.exe"
+if exist "!BUILD_DIR!\Release\run_tests.exe" (
+    "!BUILD_DIR!\Release\run_tests.exe"
 ) else (
     echo Warning: Test executable not found. Skipping tests.
 )
 
 :: Create distribution package
 echo Creating distribution package...
-mkdir "%BUILD_DIR%\package\bin"
-copy "%BUILD_DIR%\Release\SteamSuggestor.exe" "%BUILD_DIR%\package\bin"
+mkdir "!BUILD_DIR!\package\bin"
+copy "!BUILD_DIR!\Release\SteamSuggestor.exe" "!BUILD_DIR!\package\bin"
 
 :: Create a ZIP file
-cd /d "%BUILD_DIR%\package"
+cd /d "!BUILD_DIR!\package"
 powershell -Command "& { Compress-Archive -Path .\* -DestinationPath ..\SteamSuggestor-Windows.zip -Force }"
 
 echo Build completed successfully!
-echo Binary located at: %BUILD_DIR%\Release\SteamSuggestor.exe
-echo Package located at: %BUILD_DIR%\SteamSuggestor-Windows.zip
+echo Binary located at: !BUILD_DIR!\Release\SteamSuggestor.exe
+echo Package located at: !BUILD_DIR!\SteamSuggestor-Windows.zip
 
 exit /b 0
 

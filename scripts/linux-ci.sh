@@ -7,6 +7,25 @@ PROJECT_ROOT="$SCRIPT_DIR"
 
 # Setup build directory
 BUILD_DIR="$PROJECT_ROOT/build"
+#!/bin/bash
+set -e  # Exit immediately if a command exits with a non-zero status
+
+echo "Starting Linux CI build for SteamSuggestor"
+
+# Determine script location and project root
+SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
+# If running from scripts directory, go one level up to find project root
+if [[ "$SCRIPT_DIR" == */scripts ]]; then
+    PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+else
+    PROJECT_ROOT="$SCRIPT_DIR"
+fi
+
+echo "Project root: $PROJECT_ROOT"
+
+# Setup build directory
+BUILD_DIR="$PROJECT_ROOT/build"
 mkdir -p "$BUILD_DIR"
 
 # Install dependencies
@@ -45,7 +64,7 @@ fi
 # Build project
 echo "Building SteamSuggestor..."
 cd "$BUILD_DIR"
-cmake ..
+cmake "$PROJECT_ROOT"
 make -j$(nproc)
 
 # Run tests
