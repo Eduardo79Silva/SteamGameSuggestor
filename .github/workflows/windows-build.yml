@@ -12,13 +12,13 @@ jobs:
     runs-on: windows-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       
     - name: Set up scripts directory
       run: |
         mkdir -p scripts
         if (-not (Test-Path "scripts\windows-ci-script.bat")) {
-          Copy-Item windows-ci-script.bat scripts\
+          Copy-Item windows-ci-script.bat scripts\ -ErrorAction SilentlyContinue
         }
       shell: pwsh
       
@@ -28,15 +28,12 @@ jobs:
     - name: Set up Visual Studio environment
       uses: ilammy/msvc-dev-cmd@v1
       
-    - name: Install Git
-      uses: actions/setup-git@v3
-      
     - name: Run Windows CI script
       run: .\scripts\windows-ci-script.bat
       shell: cmd
       
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-build-artifacts
         path: |
