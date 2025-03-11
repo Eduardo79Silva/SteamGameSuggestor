@@ -45,9 +45,10 @@ if(WIN32)
 endif()
 
 # Force static linking for standard libraries
-set_target_properties(SteamSuggestor PROPERTIES 
-    LINK_FLAGS "-static -static-libgcc -static-libstdc++"
-)
+if(WIN32)
+    set_target_properties(SteamSuggestor PROPERTIES LINK_FLAGS "-static -static-libgcc -static-libstdc++")
+endif()
+
 
 # Google Test setup
 option(BUILD_TESTS "Build test programs" ON)
