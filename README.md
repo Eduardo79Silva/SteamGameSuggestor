@@ -140,7 +140,7 @@ This is an example of how to list things you need to use the software and how to
    ```
 5. Change git remote url to avoid accidental pushes to base project
    ```sh
-   git remote set-url origin github_username/repo_name
+   git remote set-url origin Eduardo79Silva/GameSuggestor
    git remote -v # confirm the changes
    ```
 
@@ -192,7 +192,7 @@ Don't forget to give the project a star! Thanks again!
 ### Top contributors:
 
 <a href="https://github.com/Eduardo79Silva/GameSuggestor/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=github_username/repo_name" alt="contrib.rocks image" />
+  <img src="https://contrib.rocks/image?repo=Eduardo79Silva/GameSuggestor" alt="contrib.rocks image" />
 </a>
 
 
@@ -229,15 +229,15 @@ Project Link: [https://github.com/Eduardo79Silva/GameSuggestor](https://github.c
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/Eduardo79Silva/GameSuggestor.svg?style=for-the-badge
 [contributors-url]: https://github.com/Eduardo79Silva/GameSuggestor/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/Eduardo79Silva/GameSuggestor.svg?style=for-the-badge
 [forks-url]: https://github.com/Eduardo79Silva/GameSuggestor/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/Eduardo79Silva/GameSuggestor.svg?style=for-the-badge
 [stars-url]: https://github.com/Eduardo79Silva/GameSuggestor/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/Eduardo79Silva/GameSuggestor.svg?style=for-the-badge
 [issues-url]: https://github.com/Eduardo79Silva/GameSuggestor/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/Eduardo79Silva/GameSuggestor.svg?style=for-the-badge
 [license-url]: https://github.com/Eduardo79Silva/GameSuggestor/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
