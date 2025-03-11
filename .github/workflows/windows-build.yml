@@ -16,7 +16,9 @@ jobs:
       
     - name: Set up scripts directory
       run: |
-        mkdir -p scripts
+        if (-not (Test-Path -Path "scripts")) {
+            New-Item -ItemType Directory -Path "scripts"
+        }
         if (-not (Test-Path "scripts\windows-ci-script.bat")) {
           Copy-Item windows-ci-script.bat scripts\ -ErrorAction SilentlyContinue
         }
