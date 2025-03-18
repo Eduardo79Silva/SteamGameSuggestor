@@ -37,4 +37,7 @@
 
 # Folders
 build/
+lib/
 **/.cache/
+cache/
+gtest/

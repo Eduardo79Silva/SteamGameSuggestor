@@ -1,4 +1,5 @@
 #include "GamesManager.h"
+#include <cstddef>
 #include <gtest/gtest.h>
 
 // Test fixture for GamesManager
@@ -24,36 +25,36 @@ protected:
 
 TEST_F(GamesManagerTest, InitiallyNoGames) {
   GamesManager emptyManager;
-  EXPECT_EQ(0, emptyManager.getGames().size());
+  EXPECT_EQ(std::size_t(0), emptyManager.getGames().size());
 }
 
 TEST_F(GamesManagerTest, AddGameIncreasesCount) {
   GameData newGame(789, "Game3", 2, true, 0);
   gamesManager.addGame(newGame);
-  EXPECT_EQ(3, gamesManager.getGames().size());
+  EXPECT_EQ(std::size_t(3), gamesManager.getGames().size());
 }
 
 TEST_F(GamesManagerTest, RetrieveGamesWithSpecificGenre) {
   auto games = gamesManager.getGamesWithGenre("Genre1");
-  ASSERT_EQ(1, games.size());
+  ASSERT_EQ(std::size_t(1), games.size());
   EXPECT_EQ("Game1", games[0].getName());
 }
 
 TEST_F(GamesManagerTest, RetrieveGamesWithSpecificCategory) {
   auto games = gamesManager.getGamesWithCategory("Category2");
-  ASSERT_EQ(1, games.size());
+  ASSERT_EQ(std::size_t(1), games.size());
   EXPECT_EQ("Game2", games[0].getName());
 }
 
 TEST_F(GamesManagerTest, RetrievePlayedGames) {
   auto games = gamesManager.getPlayedGames();
-  ASSERT_EQ(1, games.size());
+  ASSERT_EQ(std::size_t(1), games.size());
   EXPECT_EQ("Game2", games[0].getName());
 }
 
 TEST_F(GamesManagerTest, RetrieveUnplayedGames) {
   auto games = gamesManager.getUnplayedGames();
-  ASSERT_EQ(1, games.size());
+  ASSERT_EQ(std::size_t(1), games.size());
   EXPECT_EQ("Game1", games[0].getName());
 }
 
@@ -61,20 +62,20 @@ TEST_F(GamesManagerTest, SetGamesReplacesExistingGames) {
   GameData newGame(789, "Game3", 2, true, 0);
   gamesManager.setGames({newGame});
   auto games = gamesManager.getGames();
-  ASSERT_EQ(1, games.size());
+  ASSERT_EQ(std::size_t(1), games.size());
   EXPECT_EQ("Game3", games[0].getName());
 }
 
 TEST_F(GamesManagerTest, AddDuplicateGameDoesNotIncreaseCount) {
   gamesManager.addGame(game1);
-  EXPECT_EQ(2, gamesManager.getGames().size());
+  EXPECT_EQ(std::size_t(2), gamesManager.getGames().size());
 }
 
 TEST_F(GamesManagerTest, HandleGameWithNoGenresOrCategories) {
   GameData newGame(789, "Game3", 2, true, 0);
   gamesManager.addGame(newGame);
   auto games = gamesManager.getGames();
-  ASSERT_EQ(3, games.size());
+  ASSERT_EQ(std::size_t(3), games.size());
   EXPECT_TRUE(games[2].getGenres().empty());
   EXPECT_TRUE(games[2].getCategories().empty());
 }
@@ -83,7 +84,6 @@ TEST_F(GamesManagerTest, HandleGameWithHighPlaytime) {
   GameData newGame(789, "Game3", 1000000, true, 0);
   gamesManager.addGame(newGame);
   auto games = gamesManager.getPlayedGames();
-  ASSERT_EQ(2, games.size());
+  ASSERT_EQ(std::size_t(2), games.size());
   EXPECT_EQ(1000000, games[1].getPlaytime());
 }
-

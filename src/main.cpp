@@ -1,34 +1,14 @@
 #include "GamesManager.h"
 #include "HttpClient.h"
-#include <fstream>
+#include <SteamWebAPI.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <ostream>
 #include <thread>
 
-using json = nlohmann::json;
-
 int main() {
-  // Open the config file
-  std::ifstream configFile("config.json");
-  if (!configFile) {
-    configFile.close();
-    configFile.clear();
-    configFile.open("../config.json");
-    if (!configFile) {
-      std::cerr << "Error: Could not open config file!" << std::endl;
-      return 1;
-    }
-  }
 
-  // Parse the JSON config file
-  json config;
-  try {
-    configFile >> config;
-  } catch (const json::parse_error &e) {
-    std::cerr << "Error parsing config file: " << e.what() << std::endl;
-    return 1;
-  }
+  json config = loadSteamCredentials();
 
   // Access configuration parameters
   std::string apiKey = config.value("steamApiKey", "");
@@ -64,7 +44,7 @@ int main() {
   } catch (const std::exception &e) {
     // Catch standard exceptions
     std::cerr << "Standard exception: " << e.what() << std::endl;
-  }  catch (...) {
+  } catch (...) {
     // Catch any other exceptions
     std::cerr << "Unknown error occurred" << std::endl;
   }

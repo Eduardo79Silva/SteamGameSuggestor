@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+
 # Collect source files
 file(GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
@@ -32,16 +33,18 @@ if(UNIX)
   find_package(CURL REQUIRED)
 else()
   # Windows-specific curl handling
-  set(CURL_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/lib/curl/include)
-  set(CURL_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lib/curl/lib/libcurl.a)
+  set(CURL_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/lib/curl/install/include)
+  set(CURL_LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/lib/curl/install/lib/libcurl.dll.a)
+  set(CURL_DISABLE_HTTP3 ON)
+  set(CMAKE_USE_WINSSL ON)
 endif()
 
 target_include_directories(SteamSuggestor PRIVATE ${CURL_INCLUDE_DIRS})
-target_link_libraries(SteamSuggestor PRIVATE ${CURL_LIBRARIES})
 
-# Windows-specific: Additional libraries for static libcurl
 if(WIN32)
-    target_link_libraries(SteamSuggestor PRIVATE ws2_32 wldap32 crypt32)
+    target_link_libraries(SteamSuggestor PRIVATE ${CURL_LIBRARIES} ws2_32 wldap32 crypt32)
+else()
+    target_link_libraries(SteamSuggestor PRIVATE ${CURL_LIBRARIES})
 endif()
 
 # Force static linking for standard libraries
